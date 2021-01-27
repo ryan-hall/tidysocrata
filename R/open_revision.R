@@ -6,23 +6,23 @@
 #' or "delete" revision. An "update" revision will utilize a row identifier, if
 #' one is set on the Socrata dataset, to update existing rows and append new
 #' rows. A "replace" will perform a complete replace of the existing dataset
-#' with the file you are sending with the revision A "delete" action type
+#' with the file you are sending with the revision. A "delete" action type
 #' requires a row identifier to be have been set on the Socrata dataset, as
-#' the revision will delete rows in the published dataset that match to rows
+#' the revision will delete rows in the published dataset that are
 #' provided in the file in the revision.
 #'
 #' This function simply opens a revision and sets the action type of that
 #' revision.
 #'
-#' @param domain The domain name of the Socrata site
+#' @param domain The domain name of the Socrata site. without "https://"
 #' @param dataset_id The dataset id, or four-by-four, of the Socrata dataset
 #' @param action_type The type of revision you want to create: "update",
 #' "replace", or "delete"
 #' @param email Your Socrata username or API Key ID
 #' @param password Your Socrata password or API Key Secret
 #'
-#' @return A named list of the dataset id, the url of the new revision,
-#' and the status code returned
+#' @return A named list with the dataset id, the url of the new revision,
+#' and the status code returned while opening the revision
 #' @export
 #'
 open_revision <- function(domain, dataset_id, action_type, email, password) {
