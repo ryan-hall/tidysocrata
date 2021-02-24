@@ -7,7 +7,7 @@
 open_revision(domain, dataset_id, action_type, email, password)
 }
 \arguments{
-\item{domain}{The domain name of the Socrata site}
+\item{domain}{The domain name of the Socrata site, without "https://"}
 
 \item{dataset_id}{The dataset id, or four-by-four, of the Socrata dataset}
 
@@ -19,8 +19,8 @@ open_revision(domain, dataset_id, action_type, email, password)
 \item{password}{Your Socrata password or API Key Secret}
 }
 \value{
-A named list of the dataset id, the url of the new revision,
-and the status code returned
+A named list with the dataset id, the url of the new revision,
+and the status code returned while opening the revision
 }
 \description{
 Opens a revision (draft) on a Socrata dataset. When opening a
@@ -29,9 +29,9 @@ type. The action type determines the type of revision: an "update", "replace",
 or "delete" revision. An "update" revision will utilize a row identifier, if
 one is set on the Socrata dataset, to update existing rows and append new
 rows. A "replace" will perform a complete replace of the existing dataset
-with the file you are sending with the revision A "delete" action type
+with the file you are sending with the revision. A "delete" action type
 requires a row identifier to be have been set on the Socrata dataset, as
-the revision will delete rows in the published dataset that match to rows
+the revision will delete rows in the published dataset that are
 provided in the file in the revision.
 
 This function simply opens a revision and sets the action type of that
