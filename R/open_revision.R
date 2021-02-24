@@ -14,7 +14,7 @@
 #' This function simply opens a revision and sets the action type of that
 #' revision.
 #'
-#' @param domain The domain name of the Socrata site. without "https://"
+#' @param domain The domain name of the Socrata site, without "https://"
 #' @param dataset_id The dataset id, or four-by-four, of the Socrata dataset
 #' @param action_type The type of revision you want to create: "update",
 #' "replace", or "delete"
@@ -29,36 +29,50 @@ open_revision <- function(domain, dataset_id, action_type, email, password) {
   ## Validate inputs. If anything doesn't look right, don't open a revision.
   dataset_id <- casefold(as.character(dataset_id))
 
-  # if(!isFourByFour(dataset_id))
-  #   stop(dataset_id, " does not appear to be of valid Socrata dataset "
-  #       "identifier format.")
+  if(grepl("^[a-z0-9]{4}-[a-z0-9]{4}$", dataset_id)) {
+    stop(dataset_id, " does not appear to be of valid Socrata dataset ",
+        "identifier format.")
+  }
 
   action_type <- casefold(action_type)
-  if(!any(c(action_type == "update", action_type == "replace", action_type == "delete")))
-    stop("Invalid action_type: '", action_type, "' should be one of 'update', 'replace', or 'delete' " )
+  if(!any(c(action_type == "update", action_type == "replace",
+            action_type == "delete")))
+    stop("Invalid action_type: '",
+         action_type,
+         "' should be one of 'update', 'replace', or 'delete' " )
 
-  # domain <- validate_domain(domain)
+  domain <- validate_domain(domain)
 
-  open_revision_endpoint <- paste0('https://', domain, '/api/publishing/v1/revision/', dataset_id)
+  open_revision_endpoint <- paste0('https://',
+                                   domain,
+                                   '/api/publishing/v1/revision/',
+                                   dataset_id)
 
   open_revision_json <- paste0('{"action": {"type":"', action_type,'"}}')
 
   open_revision_response <- httr::POST(open_revision_endpoint,
                                  body = open_revision_json,
-                                 httr::add_headers("Content-Type" = "application/json"),
-                                 httr::authenticate(email, password, type = "basic")
-                                 # httr::user_agent(fetch_user_agent())
+                                 httr::add_headers(
+                                   "Content-Type" = "application/json"),
+                                 httr::authenticate(email,
+                                                    password,
+                                                    type = "basic")
+
   )
 
   if(open_revision_response$status_code == '201') {
     message("Opened new revision on dataset ", dataset_id)
 
-    open_revision_response_body <- jsonlite::fromJSON(httr::content(open_revision_response, as = "text",
-                                                                    type = "application/json",
-                                                                    encoding = "utf-8"))
+    open_revision_response_body <- jsonlite::fromJSON(
+      httr::content(open_revision_response, as = "text",
+                    type = "application/json",
+                    encoding = "utf-8")
+      )
 
     return(list(uid = dataset_id,
-                revision_url = paste0('https://', domain, open_revision_response_body$links$show),
+                revision_url = paste0('https://',
+                                      domain,
+                                      open_revision_response_body$links$show),
                 status_code = open_revision_response$status_code))
 
   } else {
