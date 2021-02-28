@@ -1,5 +1,12 @@
-## Validates and handles a domain argument
+#' Validates the format of a provided Socrata domain
+#'
+#' @param domain A Socrata hostname.
+#'
+#' @return A Socrata hostname.
+#' @export
+#'
 validate_domain <- function(domain) {
+
   domain <- casefold(domain)
   domain_parse <- httr::parse_url(domain)
 
@@ -7,14 +14,12 @@ validate_domain <- function(domain) {
     domain_valid <- domain_parse$hostname
   } else if(is.null(domain_parse$scheme) & is.null(domain_parse$host_name) &
             !is.null(domain_parse$path)) {
-    domain_valid <- domain_parse$path
+    domain_parse_edit <- httr::parse_url(paste0("https://", domain_parse$path))
+    domain_valid <- domain_parse_edit$hostname
   } else if(is.null(domain_parse$scheme) & is.null(domain_parse$host_name) &
             is.null(domain_parse$path)) {
     stop(domain, " does not appear to be a valid domain name")
   }
-
-  remove_path <- httr::parse_url(paste0("https://", domain_valid))
-  domain_valid <- remove_path$hostname
 
   return(domain_valid)
 }
