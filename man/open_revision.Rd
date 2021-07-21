@@ -19,8 +19,9 @@ open_revision(domain, dataset_id, action_type, username, password)
 \item{password}{Your Socrata password or API Key Secret}
 }
 \value{
-A named list with the asset id, the url of the new revision,
-and the status code returned while opening the revision
+A named list with the asset id, the revision sequence id,
+the url of the new revision, and the status code returned while
+opening the revision
 }
 \description{
 Opens a revision (draft) on a Socrata dataset. When opening a

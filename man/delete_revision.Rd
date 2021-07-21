@@ -4,7 +4,7 @@
 \alias{delete_revision}
 \title{Delete a Socrata revision}
 \usage{
-delete_revision(domain, dataset_id, revision_id, email, password)
+delete_revision(domain, dataset_id, revision_id, username, password)
 }
 \arguments{
 \item{domain}{A Socrata domain name.}
@@ -13,12 +13,14 @@ delete_revision(domain, dataset_id, revision_id, email, password)
 
 \item{revision_id}{An integer identifying the revision you wish to delete.}
 
-\item{email}{A Socrata username or API Key ID}
+\item{username}{A Socrata username or API Key ID}
 
 \item{password}{A Socrata password or API Secret ID}
 }
 \value{
-A HTTP status code for the delete request.
+A named list with the asset id, the revision sequence id,
+the url of the deleted revision, and the status code returned while
+deleting the revision
 }
 \description{
 Deletes a Socrata dataset revision, identified by \code{dataset_id} and
@@ -32,4 +34,7 @@ i.e. 4 in "/dataset/dataset-name/abcd-1234/revisions/4", or by making a GET
 request to "https://yourdomain.gov/api/publishing/v1/revision/abcd-1234",
 with your dataset id, finding the most recent or relevant revision, and
 locating the \code{revision_seq} number.
+
+When opening a new draft with \code{open_revision}, the \code{revision_id} is returned
+with the results.
 }

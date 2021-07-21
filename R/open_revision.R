@@ -21,8 +21,9 @@
 #' @param username Your Socrata username or API Key ID
 #' @param password Your Socrata password or API Key Secret
 #'
-#' @return A named list with the asset id, the url of the new revision,
-#' and the status code returned while opening the revision
+#' @return A named list with the asset id, the revision sequence id,
+#' the url of the new revision, and the status code returned while
+#' opening the revision
 #' @export
 #'
 open_revision <- function(domain, dataset_id, action_type, username, password) {
@@ -70,7 +71,7 @@ open_revision <- function(domain, dataset_id, action_type, username, password) {
       )
 
     return(list(asset_id = dataset_id,
-                revision_number = open_revision_response_body$resource$revision_seq,
+                revision_id = open_revision_response_body$resource$revision_seq,
                 revision_url = paste0('https://',
                                       domain,
                                       open_revision_response_body$links$show),
