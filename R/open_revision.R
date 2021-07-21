@@ -18,19 +18,19 @@
 #' @param dataset_id The dataset id, or four-by-four, of the Socrata dataset
 #' @param action_type The type of revision you want to create: "update",
 #' "replace", or "delete"
-#' @param email Your Socrata username or API Key ID
+#' @param username Your Socrata username or API Key ID
 #' @param password Your Socrata password or API Key Secret
 #'
-#' @return A named list with the dataset id, the url of the new revision,
+#' @return A named list with the asset id, the url of the new revision,
 #' and the status code returned while opening the revision
 #' @export
 #'
-open_revision <- function(domain, dataset_id, action_type, email, password) {
+open_revision <- function(domain, dataset_id, action_type, username, password) {
   ## Validate inputs. If anything doesn't look right, don't open a revision.
   dataset_id <- casefold(as.character(dataset_id))
 
-  if(grepl("^[a-z0-9]{4}-[a-z0-9]{4}$", dataset_id)) {
-    stop(dataset_id, " does not appear to be of valid Socrata dataset ",
+  if(!grepl("^[A-Za-z0-9]{4}[-]{1}[A-Za-z0-9]{4}$", dataset_id)) {
+    stop(dataset_id, " does not appear to be a valid Socrata dataset ",
         "identifier format.")
   }
 
@@ -54,7 +54,7 @@ open_revision <- function(domain, dataset_id, action_type, email, password) {
                                  body = open_revision_json,
                                  httr::add_headers(
                                    "Content-Type" = "application/json"),
-                                 httr::authenticate(email,
+                                 httr::authenticate(username,
                                                     password,
                                                     type = "basic")
 
@@ -69,7 +69,8 @@ open_revision <- function(domain, dataset_id, action_type, email, password) {
                     encoding = "utf-8")
       )
 
-    return(list(uid = dataset_id,
+    return(list(asset_id = dataset_id,
+                revision_number = open_revision_response_body$resource$revision_seq,
                 revision_url = paste0('https://',
                                       domain,
                                       open_revision_response_body$links$show),

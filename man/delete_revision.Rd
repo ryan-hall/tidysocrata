@@ -28,7 +28,7 @@ new revision.
 }
 \details{
 A revision id can be identified by looking at the end of the URL of a draft,
-i.e. 4 in "dataset/dataset-name/abcd-1234/revisions/4", or by making a GET
+i.e. 4 in "/dataset/dataset-name/abcd-1234/revisions/4", or by making a GET
 request to "https://yourdomain.gov/api/publishing/v1/revision/abcd-1234",
 with your dataset id, finding the most recent or relevant revision, and
 locating the \code{revision_seq} number.
