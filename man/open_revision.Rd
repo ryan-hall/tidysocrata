@@ -4,19 +4,19 @@
 \alias{open_revision}
 \title{Open a revision on a Socrata dataset}
 \usage{
-open_revision(domain, dataset_id, action_type, username, password)
+open_revision(domain, dataset_id, username, password, action_type)
 }
 \arguments{
-\item{domain}{The domain name of the Socrata site, without "https://"}
+\item{domain}{A domain name of a Socrata site, without "https://"}
 
 \item{dataset_id}{The dataset id, or four-by-four, of the Socrata dataset}
-
-\item{action_type}{The type of revision you want to create: "update",
-"replace", or "delete"}
 
 \item{username}{Your Socrata username or API Key ID}
 
 \item{password}{Your Socrata password or API Key Secret}
+
+\item{action_type}{The type of revision you want to create: "update",
+"replace", or "delete"}
 }
 \value{
 A named list with the asset id, the revision sequence id,

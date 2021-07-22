@@ -14,19 +14,19 @@
 #' This function simply opens a revision and sets the action type of that
 #' revision.
 #'
-#' @param domain The domain name of the Socrata site, without "https://"
+#' @param domain A domain name of a Socrata site, without "https://"
 #' @param dataset_id The dataset id, or four-by-four, of the Socrata dataset
-#' @param action_type The type of revision you want to create: "update",
-#' "replace", or "delete"
 #' @param username Your Socrata username or API Key ID
 #' @param password Your Socrata password or API Key Secret
+#' @param action_type The type of revision you want to create: "update",
+#' "replace", or "delete"
 #'
 #' @return A named list with the asset id, the revision sequence id,
 #' the url of the new revision, and the status code returned while
 #' opening the revision
 #' @export
 #'
-open_revision <- function(domain, dataset_id, action_type, username, password) {
+open_revision <- function(domain, dataset_id, username, password, action_type) {
   ## Validate inputs. If anything doesn't look right, don't open a revision.
   dataset_id <- casefold(as.character(dataset_id))
 
