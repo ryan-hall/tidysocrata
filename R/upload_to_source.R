@@ -1,5 +1,7 @@
-upload_to_source <- function(create_source_response_object, filepath_to_data,
-                             domain, email, password, status_checks = 100) {
+upload_to_source <- function(create_source_response = NULL,
+                             domain =NULL, dataset_id = NULL, revision_id = NULL,
+                             username, password,
+                             data_source, timeout = 100) {
 
   upload_data_url <- paste0('https://', domain, create_source_response_object$links$bytes)
 

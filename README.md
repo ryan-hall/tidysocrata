@@ -11,11 +11,13 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 status](https://www.r-pkg.org/badges/version/tidysocrata)](https://CRAN.R-project.org/package=tidysocrata)
 <!-- badges: end -->
 
-The goal of tidysocrata is to …
+The goal of tidysocrata is to make it easy to publish, update, and
+maintain datasets on Socrata domains, as well as interact with other
+Socrata APIs.
 
 ## Installation
 
-You can install the released version of tidysocrata from
+(not yet) You can install the released version of tidysocrata from
 [CRAN](https://CRAN.R-project.org) with:
 
 ``` r
@@ -47,10 +49,3 @@ summary(cars)
 
 You’ll still need to render `README.Rmd` regularly, to keep `README.md`
 up-to-date.
-
-You can also embed plots, for example:
-
-<img src="man/figures/README-pressure-1.png" width="100%" />
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub\!

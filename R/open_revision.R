@@ -27,7 +27,6 @@
 #' @export
 #'
 open_revision <- function(domain, dataset_id, username, password, action_type) {
-  ## Validate inputs. If anything doesn't look right, don't open a revision.
   dataset_id <- casefold(as.character(dataset_id))
 
   if(!grepl("^[A-Za-z0-9]{4}[-]{1}[A-Za-z0-9]{4}$", dataset_id)) {
@@ -75,7 +74,8 @@ open_revision <- function(domain, dataset_id, username, password, action_type) {
                 revision_url = paste0('https://',
                                       domain,
                                       open_revision_response_body$links$show),
-                status_code = open_revision_response$status_code))
+                status_code = open_revision_response$status_code,
+                links = open_revision_response_body$links))
 
   } else {
     httr::stop_for_status(open_revision_response$status_code)

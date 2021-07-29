@@ -5,9 +5,9 @@
 #' with `source_parse`. Defining a source is a prerequite to actually sending new data to the
 #' revision in `upload_to_source`.
 #'
-#' @param domain A domain name of a Socrata site, without "https://"
 #' @param revision_response The named list returned by `open_revision`. Alternatively, provide
 #' `dataset_id` and `revision_id` individually.
+#' #' @param domain A domain name of a Socrata site, without "https://"
 #' @param dataset_id A Socrata dataset id, or four-by-four, if not providing the `revision_response`
 #' @param revision_id A Socrata dataset revision id, an integer, if not providing the `revision_response`
 #' @param username A Socrata username or API Key ID
@@ -26,8 +26,8 @@
 #' @export
 #'
 #' @examples
-create_source <- function(domain, revision_response = NULL,
-                          dataset_id = NULL, revision_id = NULL,
+create_source <- function(revision_response = NULL,
+                          domain = NULL, dataset_id = NULL, revision_id = NULL,
                           username, password,
                           source_type = "upload", source_parse = TRUE) {
 
