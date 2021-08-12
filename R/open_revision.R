@@ -19,11 +19,11 @@
 #' @param username Your Socrata username or API Key ID
 #' @param password Your Socrata password or API Key Secret
 #' @param action_type The type of revision you want to create: "update",
-#' "replace", or "delete"
+#' "replace", or "delete".
 #'
 #' @return A named list with the asset id, the revision sequence id,
-#' the url of the new revision, and the status code returned while
-#' opening the revision
+#' the url of the new revision, the status code returned while
+#' opening the revision, and the full response body
 #' @export
 #'
 open_revision <- function(domain, dataset_id, username, password, action_type) {
@@ -39,7 +39,7 @@ open_revision <- function(domain, dataset_id, username, password, action_type) {
             action_type == "delete")))
     stop("Invalid action_type: '",
          action_type,
-         "' should be one of 'update', 'replace', or 'delete' " )
+         "' should be one of 'update', 'replace', or 'delete'. " )
 
   domain <- validate_domain(domain)
 
@@ -61,7 +61,7 @@ open_revision <- function(domain, dataset_id, username, password, action_type) {
   )
 
   if(open_revision_response$status_code == '201') {
-    message("Opened new revision on dataset ", dataset_id)
+    message("Opened new revision on dataset ", dataset_id, ".")
 
     open_revision_response_body <- jsonlite::fromJSON(
       httr::content(open_revision_response, as = "text",
@@ -75,7 +75,7 @@ open_revision <- function(domain, dataset_id, username, password, action_type) {
                                       domain,
                                       open_revision_response_body$links$show),
                 status_code = open_revision_response$status_code,
-                links = open_revision_response_body$links))
+                response_body = open_revision_response_body))
 
   } else {
     httr::stop_for_status(open_revision_response$status_code)

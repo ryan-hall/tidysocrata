@@ -5,10 +5,7 @@
 \title{Define a source for a Socrata dataset revision}
 \usage{
 create_source(
-  domain,
-  revision_response = NULL,
-  dataset_id = NULL,
-  revision_id = NULL,
+  revision_response,
   username,
   password,
   source_type = "upload",
@@ -16,14 +13,7 @@ create_source(
 )
 }
 \arguments{
-\item{domain}{A domain name of a Socrata site, without "https://"}
-
-\item{revision_response}{The named list returned by \code{open_revision}. Alternatively, provide
-\code{dataset_id} and \code{revision_id} individually.}
-
-\item{dataset_id}{A Socrata dataset id, or four-by-four, if not providing the \code{revision_response}}
-
-\item{revision_id}{A Socrata dataset revision id, an integer, if not providing the \code{revision_response}}
+\item{revision_response}{The named list returned by \code{open_revision}.}
 
 \item{username}{A Socrata username or API Key ID}
 
@@ -40,8 +30,8 @@ GeoJSON format, Keyhole Markup Language (KML), Zipped Keyhole Markup Language (K
 }
 \value{
 A named list with the asset id, the revision sequence id,
-the url of the revision, and the status code returned while
-creating the source
+the url of the revision, the status code returned while
+creating the source, and the full response body.
 }
 \description{
 Defines a source for a Socrata dataset revision, including that the new data

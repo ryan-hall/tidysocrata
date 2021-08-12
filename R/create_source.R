@@ -5,11 +5,7 @@
 #' with `source_parse`. Defining a source is a prerequite to actually sending new data to the
 #' revision in `upload_to_source`.
 #'
-#' @param revision_response The named list returned by `open_revision`. Alternatively, provide
-#' `dataset_id` and `revision_id` individually.
-#' #' @param domain A domain name of a Socrata site, without "https://"
-#' @param dataset_id A Socrata dataset id, or four-by-four, if not providing the `revision_response`
-#' @param revision_id A Socrata dataset revision id, an integer, if not providing the `revision_response`
+#' @param open_revision_response The named list returned by `open_revision`.
 #' @param username A Socrata username or API Key ID
 #' @param password A Socrata password or API Key Secret
 #' @param source_type a character string indicating the type of source: 'upload' for files uploaded
@@ -21,13 +17,12 @@
 #' GeoJSON format, Keyhole Markup Language (KML), Zipped Keyhole Markup Language (KMZ)
 #'
 #' @return A named list with the asset id, the revision sequence id,
-#' the url of the revision, and the status code returned while
-#' creating the source
+#' the url of the revision, the status code returned while
+#' creating the source, and the full response body.
 #' @export
 #'
 #' @examples
-create_source <- function(revision_response = NULL,
-                          domain = NULL, dataset_id = NULL, revision_id = NULL,
+create_source <- function(open_revision_response,
                           username, password,
                           source_type = "upload", source_parse = TRUE) {
 
@@ -43,63 +38,44 @@ create_source <- function(revision_response = NULL,
     ),
     pretty = T)
 
-  if(is.list(revision_response)) {
-    create_source_url <- paste0(revision_response$revision_url, "/source")
-  } else {
-    create_source_url <- paste0("https://", domain, "/api/publishing/v1/revision/", dataset_id,
-                                "/", revision_id, "/source")
-  }
+  create_source_url <- paste0(open_revision_response$revision_url, "/source")
 
   create_source_response <- httr::POST(create_source_url,
                                        body = source_json,
                                        httr::add_headers("Content-Type" = "application/json"),
                                        httr::authenticate(username, password, type = "basic"))
 
+  create_source_response_body <- jsonlite::fromJSON(
+    httr::content(create_source_response, as = "text",
+                  type = "application/json",
+                  encoding = "utf-8")
+  )
+
   if (create_source_response$status_code == "201") {
-    if(is.list(revision_response)) {
-      message("Created source for revision ",
-              revision_response$revision_id  ," on dataset ",
-              revision_response$asset_id)
 
-      return(list(asset_id = revision_response$asset_id,
-                  revision_id = revision_response$revision_id,
-                  revision_url = revision_response$revision_url,
-                  status_code = create_source_response$status_code))
-    } else {
-      message("Created source for revision ",
-              revision_id , " on dataset ",
-              dataset_id)
+    message("Created source for revision ",
+            open_revision_response$revision_id  ," on dataset ",
+            open_revision_response$asset_id, ".")
 
-      return(list(asset_id = dataset_id,
-                  revision_id = revision_id,
-                  revision_url = paste0("https://", domain, "/api/publishing/v1/revision/",
-                                        dataset_id, "/", revision_id),
-                  status_code = create_source_response$status_code))
-    }
+    return(list(asset_id = open_revision_response$asset_id,
+                revision_id = open_revision_response$revision_id,
+                revision_url = open_revision_response$revision_url,
+                status_code = create_source_response$status_code,
+                response_body = create_source_response_body))
 
   } else {
-    if(is.list(revision_response)) {
-      message("Failed to create source for revision ",
-              revision_response$revision_id  ," on dataset ",
-              revision_response$asset_id, " with status code ",
-              create_source_response$status_code)
 
-      return(list(asset_id = revision_response$asset_id,
-                  revision_id = revision_response$revision_id,
-                  revision_url = revision_response$revision_url,
-                  status_code = create_source_response$status_code))
-    } else {
-      message("Failed to create source for revision ",
-              revision_id , " on dataset ",
-              dataset_id, " with status code ",
-              create_source_response$status_code)
+    message("Failed to create source for revision ",
+            open_revision_response$revision_id  ," on dataset ",
+            open_revision_response$asset_id, " with status code ",
+            create_source_response$status_code, ".")
 
-      return(list(asset_id = dataset_id,
-                  revision_id = revision_id,
-                  revision_url = paste0("https://", domain, "/api/publishing/v1/revision/",
-                                        dataset_id, "/", revision_id),
-                  status_code = create_source_response$status_code))
-    }
+    return(list(asset_id = open_revision_response$asset_id,
+                revision_id = open_revision_response$revision_id,
+                revision_url = open_revision_response$revision_url,
+                status_code = create_source_response$status_code,
+                response_body = create_source_response_body))
+
     stop_for_status(create_source_response$status_code)
   }
 }
