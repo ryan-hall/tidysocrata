@@ -1,22 +1,45 @@
-apply_revision <- function(revision_response_object, domain, email, password) {
+apply_revision <- function(upload_to_source_response,
+                           username, password) {
 
-  apply_revision_url <- paste0(domain, revision_response_object$links$apply)
-  apply_revision_json <- paste0('{"resource": {"id":',
-                                revision_response_object$resource$revision_seq,
-                                '}}')
+  apply_revision_url <- paste0(upload_to_source_response$revision_url, '/apply')
+
+  apply_revision_json <- jsonlite::toJSON(
+    list(
+      resource = list(
+        id = upload_to_source_response$revision_id)
+    ))
 
   apply_revision_response <- httr::PUT(apply_revision_url,
                                        body = apply_revision_json,
                                        httr::add_headers("Content-Type" = "application/json"),
-                                       httr::authenticate(email, password, type = "basic"),
-                                       httr::user_agent(fetch_user_agent())
-  )
+                                       httr::authenticate(username, password, type = "basic"))
+
+  apply_revision_response_body <- jsonlite::fromJSON(
+    httr::content(apply_revision_response,
+                  as = "text",
+                  type = "application/json",
+                  encoding = "utf-8"))
 
   if (apply_revision_response$status_code == "200") {
-    message("Revision applied. Socrata is processing the update.")
+    message("Revision ", upload_to_source_response$revision_id,
+            " applied on dataset ", upload_to_source_response$asset_id,
+            ". Socrata is processing the update.")
+
+    return(list(asset_id = upload_to_source_response$asset_id,
+                revision_id = upload_to_source_response$revision_id,
+                revision_url = upload_to_source_response$revision_url,
+                status_code = apply_revision_response$status_code,
+                response_body = apply_revision_response_body))
+
   } else {
-    message("Revision failed to apply. Check the apply_revision_response for details.")
-    apply_revision_response <- jsonlite::fromJSON(httr::content(apply_revision_response,as = "text",type = "application/json", encoding = "utf-8"))
-    return(apply_revision_response)
+    message("Revision ", upload_to_source_response$revision_id,
+            " failed to apply on dataset ", upload_to_source_response$asset_id,
+            ". Check the response_body for details.")
+
+    return(list(asset_id = upload_to_source_response$asset_id,
+                revision_id = upload_to_source_response$revision_id,
+                revision_url = upload_to_source_response$revision_url,
+                status_code = apply_revision_response$status_code,
+                response_body = apply_revision_response_body))
   }
 }

@@ -10,7 +10,7 @@ upload_to_source <- function(create_source_response,
                             '/', create_source_response$response_body$links$bytes)
 
   if(!is.data.frame(data_source) & !is.character(data_source)) {
-    stop(data_source, " does not appear to be a data.frame or filepath")
+    stop(data_source, " does not appear to be a data.frame or filepath.")
   }
 
   if (is.data.frame(data_source)) {
@@ -29,23 +29,25 @@ upload_to_source <- function(create_source_response,
                                      httr::authenticate(username, password,
                                                         type = "basic"))
 
-  upload_data_response_body <- jsonlite::fromJSON(httr::content(upload_data_response,as = "text",
-                                                                type = "application/json",
-                                                                encoding = "utf-8"))
+  upload_data_response_body <- jsonlite::fromJSON(
+    httr::content(upload_data_response,
+                  as = "text",
+                  type = "application/json",
+                  encoding = "utf-8"))
 
   if (upload_data_response$status_code == "200") {
 
     message("Uploading data source to revision ",
-            upload_data_response_body$revision_id  ," on dataset ",
-            upload_data_response_body$asset_id)
+            create_source_response$revision_id  ," on dataset ",
+            create_source_response$asset_id, ".")
 
   } else {
     message("Failed to upload data to revision ",
-            upload_data_response_body$revision_id,
+            create_source_response$revision_id,
             " on dataset ",
-            upload_data_response_body$asset_id,
+            create_source_response$asset_id,
             " with status code ",
-            upload_data_response$status_code)
+            upload_data_response$status_code, ".")
 
     stop_for_status(upload_data_response$status_code)
   }

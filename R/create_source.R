@@ -5,7 +5,7 @@
 #' with `source_parse`. Defining a source is a prerequite to actually sending new data to the
 #' revision in `upload_to_source`.
 #'
-#' @param revision_response The named list returned by `open_revision`.
+#' @param open_revision_response The named list returned by `open_revision`.
 #' @param username A Socrata username or API Key ID
 #' @param password A Socrata password or API Key Secret
 #' @param source_type a character string indicating the type of source: 'upload' for files uploaded
@@ -22,7 +22,7 @@
 #' @export
 #'
 #' @examples
-create_source <- function(revision_response,
+create_source <- function(open_revision_response,
                           username, password,
                           source_type = "upload", source_parse = TRUE) {
 
@@ -38,7 +38,7 @@ create_source <- function(revision_response,
     ),
     pretty = T)
 
-  create_source_url <- paste0(revision_response$revision_url, "/source")
+  create_source_url <- paste0(open_revision_response$revision_url, "/source")
 
   create_source_response <- httr::POST(create_source_url,
                                        body = source_json,
@@ -54,25 +54,25 @@ create_source <- function(revision_response,
   if (create_source_response$status_code == "201") {
 
     message("Created source for revision ",
-              revision_response$revision_id  ," on dataset ",
-              revision_response$asset_id)
+            open_revision_response$revision_id  ," on dataset ",
+            open_revision_response$asset_id, ".")
 
-    return(list(asset_id = revision_response$asset_id,
-                revision_id = revision_response$revision_id,
-                revision_url = revision_response$revision_url,
+    return(list(asset_id = open_revision_response$asset_id,
+                revision_id = open_revision_response$revision_id,
+                revision_url = open_revision_response$revision_url,
                 status_code = create_source_response$status_code,
                 response_body = create_source_response_body))
 
   } else {
 
     message("Failed to create source for revision ",
-            revision_response$revision_id  ," on dataset ",
-            revision_response$asset_id, " with status code ",
-            create_source_response$status_code)
+            open_revision_response$revision_id  ," on dataset ",
+            open_revision_response$asset_id, " with status code ",
+            create_source_response$status_code, ".")
 
-    return(list(asset_id = revision_response$asset_id,
-                revision_id = revision_response$revision_id,
-                revision_url = revision_response$revision_url,
+    return(list(asset_id = open_revision_response$asset_id,
+                revision_id = open_revision_response$revision_id,
+                revision_url = open_revision_response$revision_url,
                 status_code = create_source_response$status_code,
                 response_body = create_source_response_body))
 
